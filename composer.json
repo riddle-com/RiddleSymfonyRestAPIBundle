@@ -1,0 +1,30 @@
+{
+    "name": "riddle/rest-api-bundle",
+    "description": "A bundle which provides your project with useful REST API functions",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Philipp Martini",
+            "email": "philipp@riddle.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "symfony/framework-bundle": "^5.0",
+        "symfony/http-kernel": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Riddle\\RestAPIBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Riddle\\RestAPIBundle\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^5.0"
+    }
+}
