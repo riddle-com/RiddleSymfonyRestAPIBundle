@@ -11,7 +11,6 @@ use Riddle\RestAPIBundle\Service\ResponseService;
 
 class ResponseServiceTest extends TestCase
 {
-
     public function testCreateResponse_success()
     {
         $responseService = $this->_getService();
@@ -90,7 +89,7 @@ class ResponseServiceTest extends TestCase
         $this->assertTrue($this->_getService()->createItemsResponse($data), 'The createItemsResponse() function did not throw an exception although $data isn\'t a countable.');
     }
 
-    private function _checkItemsResponse($itemsResponse, $data) 
+    private function _checkItemsResponse($itemsResponse, $data)
     {
         $this->assertTrue($itemsResponse['data']['count'] === count($data), 'The count field of the itemsResponse is not equals the count of $data');
         $this->assertCount(count($itemsResponse['data']['items']), $data, 'The count of the items array field is not equals the count of the data array');
@@ -103,6 +102,4 @@ class ResponseServiceTest extends TestCase
 
         return $responseService;
     }
-
-
 }

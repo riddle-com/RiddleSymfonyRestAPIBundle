@@ -13,14 +13,13 @@ use Riddle\RestAPIBundle\Exception\NotFoundException;
 
 class ResponseService
 {
-
     private $wrapInResponse = true;
 
     /**
      * @param $exc the exception that was thrown and which should be handled accordingly
      * @return JsonResponse
      */
-    public function handleException(\Exception $exc) 
+    public function handleException(\Exception $exc)
     {
         $msg = $exc->getMessage();
 
@@ -72,12 +71,12 @@ class ResponseService
      *  success => $success,
      *  $data
      * ]
-     * 
+     *
      * @param $success defines whether the response should display a success/failure
      * @param $httpcode the http code is included in the response
      * @param $data gets appended to the response array.
      * @return JsonResponse which can be returned in any controller
-     * 
+     *
      */
     public function createResponse(bool $success, int $httpCode, array $data)
     {
@@ -97,7 +96,7 @@ class ResponseService
     /**
      * Checks if the HTTP response code is valid.
      * For simplicity reasons we only check if the code is positive and if not an exception gets thrown (see below)
-     * 
+     *
      * @throws InvalidArgumentException if the code is not valid
      */
     private function _checkHttpCode(int $code)
@@ -115,5 +114,4 @@ class ResponseService
     {
         $this->wrapInResponse = $wrapInResponse;
     }
-
 }

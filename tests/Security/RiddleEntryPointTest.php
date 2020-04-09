@@ -7,7 +7,6 @@ use Riddle\RestAPIBundle\Security\RiddleEntryPoint;
 
 class RiddleEntryPointTest extends WebTestCase
 {
-
     public function testShouldBeCaught()
     {
         $rightPaths = ['api', 'rest', 'aPi', 'rEST'];
@@ -22,5 +21,4 @@ class RiddleEntryPointTest extends WebTestCase
             $this->assertFalse(RiddleEntryPoint::shouldBeCaught('/' . $path . '/'), 'RiddleEntryPoint: ' . $path . ' shouldn\'t have been caught.');
         }
     }
-
 }
