@@ -7,8 +7,9 @@
 namespace Riddle\RestAPIBundle\Service;
 
 use InvalidArgumentException;
+use Riddle\RestAPIBundle\Exception\HttpException;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Riddle\RestAPIBundle\Exception\ExceptionNotFoundException;
+use Riddle\RestAPIBundle\Exception\NotFoundException;
 
 class ResponseService
 {
@@ -19,11 +20,12 @@ class ResponseService
      * @param $exc the exception that was thrown and which should be handled accordingly
      * @return JsonResponse
      */
-    public function handleException(\Exception $exc) {
+    public function handleException(\Exception $exc) 
+    {
         $msg = $exc->getMessage();
 
-        if ($exc instanceof ExceptionNotFoundException) {
-            return $this->createNotFoundResponse($msg);
+        if ($exc instanceof HttpException) {
+            return $this->createErrorResponse($exc->getMessage(), $exc->getCode());
         }
         
         return $this->createAccessDeniedResponse($msg); // "default case"
