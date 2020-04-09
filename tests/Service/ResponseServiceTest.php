@@ -3,13 +3,14 @@
 namespace Riddle\RestAPIBundle\Tests\Service;
 
 use PHPUnit\Framework\TestCase;
-
-use Riddle\RestAPIBundle\Exception\ExceptionNotFoundException;
+use Riddle\RestAPIBundle\Exception\HttpException;
+use Riddle\RestAPIBundle\Exception\AccessDeniedException;
+use Riddle\RestAPIBundle\Exception\NotFoundException;
+use Riddle\RestAPIBundle\Exception\UnauthorizedException;
 use Riddle\RestAPIBundle\Service\ResponseService;
 
 class ResponseServiceTest extends TestCase
 {
-
     public function testCreateResponse_success()
     {
         $responseService = $this->_getService();
@@ -41,21 +42,37 @@ class ResponseServiceTest extends TestCase
         $this->_checkErrorResponse($this->_getService()->createErrorResponse($msg, $code), $code, $msg);
     }
 
-    public function testHandleException_default()
+    public function testHandleException_httpExceptions()
     {
-        $notFoundException = new ExceptionNotFoundException('Exception not found test.');
-        $notFoundResponse = $this->_getService()->handleException($notFoundException);
-        $this->_checkErrorResponse($notFoundResponse, 404, $notFoundException->getMessage());
+        $this->_checkHttpException(new HttpException('You just got redirected because why not?', 301));
+        $this->_checkHttpException(new UnauthorizedException('Unauthorized exc test.'), 401);
+        $this->_checkHttpException(new AccessDeniedException('Access denied exc test.'), 403);
+        $this->_checkHttpException(new NotFoundException('Not found exc test.'), 404);
+    }
 
+    /**
+     * If no http exception gets passed the service should return a 403 - access denied error.
+     */
+    public function testHandleException_otherException()
+    {
         $defaultException = new \Exception('Normal exception test');
         $defaultExceptionResponse = $this->_getService()->handleException($defaultException);
         $this->_checkErrorResponse($defaultExceptionResponse, 403, $defaultException->getMessage());
     }
 
+    /**
+     * @param $codeToTest makes sure that there are no sloppy mistakes - e.g. AccessDeniedException throws 200 - would be wrong but without that check that test would be successful
+     */
+    private function _checkHttpException(HttpException $exc, int $codeToTest = -1)
+    {
+        $httpExceptionResponse = $this->_getService()->handleException($exc);
+        $this->_checkErrorResponse($httpExceptionResponse, $codeToTest === -1 ? $exc->getCode() : $codeToTest, $exc->getMessage());
+    }
+
     private function _checkErrorResponse($errorResponse, int $code, string $msg)
     {
         $this->assertTrue($errorResponse['success'] === false, 'The success of an ErrorResponse should be false.');
-        $this->assertTrue($errorResponse['error']['code'] === $code, 'The HTTP status code doesn\'t match the expected one.');
+        $this->assertTrue($errorResponse['error']['code'] === $code, 'The HTTP status code doesn\'t match the expected one (received: ' . $errorResponse['error']['code'] . ', expected: ' . $code . ')');
         $this->assertTrue($errorResponse['error']['msg'] === $msg, 'The error message is not equals the message from the exception.');
     }
 
@@ -72,7 +89,7 @@ class ResponseServiceTest extends TestCase
         $this->assertTrue($this->_getService()->createItemsResponse($data), 'The createItemsResponse() function did not throw an exception although $data isn\'t a countable.');
     }
 
-    private function _checkItemsResponse($itemsResponse, $data) 
+    private function _checkItemsResponse($itemsResponse, $data)
     {
         $this->assertTrue($itemsResponse['data']['count'] === count($data), 'The count field of the itemsResponse is not equals the count of $data');
         $this->assertCount(count($itemsResponse['data']['items']), $data, 'The count of the items array field is not equals the count of the data array');
@@ -85,6 +102,4 @@ class ResponseServiceTest extends TestCase
 
         return $responseService;
     }
-
-
 }

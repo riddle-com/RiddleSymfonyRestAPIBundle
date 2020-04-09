@@ -6,6 +6,12 @@
 
     <services>
         <service id="riddle_restapibundle.response_service" class="Riddle\RestAPIBundle\Service\ResponseService" public="true" />
-        <service id="Riddle\RestAPIBundle\Service\ResponseService" alias="riddle_restapibundle.response_service" public="false" />
+        <service id="Riddle\RestAPIBundle\Service\ResponseService" alias="riddle_restapibundle.response_service" public="true" />
+        
+        <service id="riddle_restapibundle.entry_point" class="Riddle\RestAPIBundle\Security\RiddleEntryPoint" public="true">
+            <argument type="service" id="Symfony\Component\Routing\Generator\UrlGeneratorInterface"/>
+            <argument type="service" id="Riddle\RestAPIBundle\Service\ResponseService"/>
+        </service>
+        <service id="Riddle\RestAPIBundle\Security\RiddleEntryPoint" alias="riddle_restapibundle.response_service" public="true" />
     </services>
 </container>
